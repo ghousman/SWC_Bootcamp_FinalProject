@@ -1,0 +1,47 @@
+---
+title: "SwcFinalProject_rMarkdown"
+author: "Eric D. Johnson"
+date: "Thursday, March 19, 2015"
+output: pdf_document
+---
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+```{r}
+data.in <- read.table("../data/gapminderDataFiveYear.txt", sep="\t", header = TRUE)
+
+
+Afgstn.data <- subset(data.in, country=="Afghanistan", 
+               select=c(year, gdpPercap))
+
+Zmbw.data<- subset(data.in, country=="Zimbabwe", 
+            select=c(year, gdpPercap))
+
+
+US.data<- subset(data.in, country=="United States", 
+          elect=c(year, gdpPercap))
+```
+
+You can also embed plots, for example:
+
+```{r, echo=FALSE}
+
+ggplot(Afgstn.data, aes(x=year, y=gdpPercap)) +
+        geom_point() +
+        geom_smooth(method=lm) +
+        ggtitle("Afghanistan")
+
+ggplot(US.data, aes(x=year, y=gdpPercap)) +
+  geom_point() +
+  geom_smooth(method=lm) +
+  ggtitle("United States")
+
+ggplot(Zmbw.data, aes(x=year, y=gdpPercap)) +
+  geom_point() +
+  geom_smooth(method=lm) +
+  ggtitle("Zimbabwe")
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
