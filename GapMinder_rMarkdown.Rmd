@@ -1,15 +1,15 @@
 ---
-title: "SwcFinalProject_rMarkdown"
+title: "SWC Seminar Series Final Project"
 author: "Eric D. Johnson"
 date: "Thursday, March 19, 2015"
-output: pdf_document
+output: word_document
 ---
 
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+This is a simple analyziz of some gapminder data for the SWC final project.
+Look at this great Afghanistan data! The trend is all wack!
 
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+```{r, echo=FALSE}
 
-```{r}
 data.in <- read.table("../data/gapminderDataFiveYear.txt", sep="\t", header = TRUE)
 
 
@@ -22,26 +22,30 @@ Zmbw.data<- subset(data.in, country=="Zimbabwe",
 
 US.data<- subset(data.in, country=="United States", 
           elect=c(year, gdpPercap))
-```
 
-You can also embed plots, for example:
-
-```{r, echo=FALSE}
-
-ggplot(Afgstn.data, aes(x=year, y=gdpPercap)) +
+library(ggplot2)
+print(ggplot(Afgstn.data, aes(x=year, y=gdpPercap)) +
         geom_point() +
         geom_smooth(method=lm) +
-        ggtitle("Afghanistan")
-
-ggplot(US.data, aes(x=year, y=gdpPercap)) +
-  geom_point() +
-  geom_smooth(method=lm) +
-  ggtitle("United States")
-
-ggplot(Zmbw.data, aes(x=year, y=gdpPercap)) +
-  geom_point() +
-  geom_smooth(method=lm) +
-  ggtitle("Zimbabwe")
+        ggtitle("Afghanistan"))
 ```
 
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+Look at this great United States data; the trend is bomb-diggity!
+
+```{r, echo=FALSE}
+print(ggplot(US.data, aes(x=year, y=gdpPercap)) +
+  geom_point() +
+  geom_smooth(method=lm) +
+  ggtitle("United States"))
+```
+
+Look at this great Zimbabwe data; super gnar!
+
+```{r, echo=FALSE}
+print(ggplot(Zmbw.data, aes(x=year, y=gdpPercap)) +
+  geom_point() +
+  geom_smooth(method=lm) +
+  ggtitle("Zimbabwe"))
+
+```
+
