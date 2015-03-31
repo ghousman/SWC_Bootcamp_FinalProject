@@ -2,32 +2,14 @@
 # Eric D. Johnson March 19, 2015
 # eric.johnson.d@gmail.com
 
-getwd()
+# Load packages
+require(knitr)
+require(markdown)
 
-data.in <- read.table("../data/gapminderDataFiveYear.txt", sep="\t", header = TRUE)
-
-
-Afgstn.data <- subset(data.in, country=="Afghanistan", 
-               select=c(year, gdpPercap))
-
-Zmbw.data<- subset(data.in, country=="Zimbabwe", 
-            select=c(year, gdpPercap))
+# Create .md, .html, and .pdf files
+knit("GapMinder_rMarkdown.Rmd")
+markdownToHTML('GapMinder_rMarkdown.md', 'GapMinder_rMarkdown.html', options=c("use_xhml"))
+shell("pandoc -s GapMinder_rMarkdown.html -o MGapMinder_rMarkdown.pdf")
 
 
-US.data<- subset(data.in, country=="United States", 
-          elect=c(year, gdpPercap))
-
-ggplot(Afgstn.data, aes(x=year, y=gdpPercap)) +
-        geom_point() +
-        geom_smooth(method=lm) +
-        ggtitle("Afghanistan")
-
-ggplot(US.data, aes(x=year, y=gdpPercap)) +
-  geom_point() +
-  geom_smooth(method=lm) +
-  ggtitle("United States")
-
-ggplot(Zmbw.data, aes(x=year, y=gdpPercap)) +
-  geom_point() +
-  geom_smooth(method=lm) +
-  ggtitle("Zimbabwe")
+render("GapMinder_rMarkdown.Rmd")

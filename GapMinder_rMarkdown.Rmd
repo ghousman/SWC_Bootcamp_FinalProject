@@ -5,23 +5,70 @@ date: "Thursday, March 19, 2015"
 output: word_document
 ---
 
-This is a simple analyziz of some gapminder data for the SWC final project.
+This is a simple analysis of some gapminder data for the SWC final project.
+
+
 Look at this great Afghanistan data! The trend is all wack!
 
 ```{r, echo=FALSE}
+dir <- getwd() #set dir to the current working directory
 
-data.in <- read.table("../data/gapminderDataFiveYear.txt", sep="\t", header = TRUE)
+## Data read from .txt file and then subsetted
+# data.in <- read.table("../data/gapminderDataFiveYear.txt", sep="\t", header = TRUE)
+# 
+# Afgstn.data <- subset(data.in, country=="Afghanistan", 
+#               select=c(year, gdpPercap))
+# 
+# Zmbw.data <- subset(data.in, country=="Zimbabwe", 
+#              select=c(year, gdpPercap))
+# 
+# US.data <- subset(data.in, country=="United States", 
+#            select=c(year, gdpPercap))
 
+#SQL queries
+Afgstn.sql <- "SELECT GapminderDataFiveYear.year, GapminderDataFiveYear.gdpPercap
+               FROM GapminderDataFiveYear
+               WHERE (((GapminderDataFiveYear.country) = 'Afghanistan'))"
 
-Afgstn.data <- subset(data.in, country=="Afghanistan", 
-               select=c(year, gdpPercap))
+Zmbw.sql <- "SELECT GapminderDataFiveYear.year, GapminderDataFiveYear.gdpPercap
+               FROM GapminderDataFiveYear
+               WHERE (((GapminderDataFiveYear.country) = 'Zimbabwe'))"
 
-Zmbw.data<- subset(data.in, country=="Zimbabwe", 
-            select=c(year, gdpPercap))
+US.sql <- "SELECT GapminderDataFiveYear.year, GapminderDataFiveYear.gdpPercap
+               FROM GapminderDataFiveYear
+               WHERE (((GapminderDataFiveYear.country) = 'United States'))"
 
+#data queried from SQLite database
+library("DBI")
+library("RSQLite")
+setwd("../data/") #set the working directory to the folder called "data" at the same level as the current working directory
 
-US.data<- subset(data.in, country=="United States", 
-          elect=c(year, gdpPercap))
+db.conn <- dbConnect(SQLite(), dbname = "GapMinder.sqlite") #create a databae connection
+
+Afgstn.data <- dbGetQuery(db.conn, Afgstn.sql)
+
+Zmbw.data <- dbGetQuery(db.conn, Zmbw.sql)
+
+US.data <- dbGetQuery(db.conn, US.sql)
+
+dbDisconnect(db.conn)
+
+setwd(dir)##re-set the working directory
+
+##Data queried from MS Access database 
+##this code needs the 'Test' channel to be configured via ODBC on the local machine
+# library(RODBC)
+# db.channel<-odbcConnect("Test")
+# odbcGetInfo(db.channel)
+# 
+# Afgstn.data <- sqlQuery(db.channel, Afgstn.sql)
+# 
+# Zmbw.data <- sqlQuery(db.channel, Zmbw.sql)
+# 
+# US.data <- sqlQuery(db.channel, US.sql)
+# 
+# close(db.channel)
+# 
 
 library(ggplot2)
 print(ggplot(Afgstn.data, aes(x=year, y=gdpPercap)) +
@@ -33,15 +80,18 @@ print(ggplot(Afgstn.data, aes(x=year, y=gdpPercap)) +
 Look at this great United States data; the trend is bomb-diggity!
 
 ```{r, echo=FALSE}
+
 print(ggplot(US.data, aes(x=year, y=gdpPercap)) +
   geom_point() +
   geom_smooth(method=lm) +
   ggtitle("United States"))
+
 ```
 
 Look at this great Zimbabwe data; super gnar!
 
 ```{r, echo=FALSE}
+
 print(ggplot(Zmbw.data, aes(x=year, y=gdpPercap)) +
   geom_point() +
   geom_smooth(method=lm) +
