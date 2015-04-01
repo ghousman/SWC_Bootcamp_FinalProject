@@ -2,7 +2,7 @@
 title: "SWC Seminar Series Final Project"
 author: "Eric D. Johnson"
 date: "Thursday, March 19, 2015"
-output: word_document
+output: pdf_document
 ---
 
 This is a simple analysis of some gapminder data for the SWC final project.
