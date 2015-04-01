@@ -38,6 +38,16 @@ US.sql <- "SELECT GapminderDataFiveYear.year, GapminderDataFiveYear.gdpPercap
                FROM GapminderDataFiveYear
                WHERE (((GapminderDataFiveYear.country) = 'United States'))"
 
+Contnt.sql <- "SELECT GapminderDataFiveYear.continent, 
+                    Avg(GapminderDataFiveYear.lifeExp) AS MeanLifeExp, 
+                    Min(GapminderDataFiveYear.lifeExp) AS MinLifeExp, 
+                    Max(GapminderDataFiveYear.lifeExp) AS MaxLifeExp
+                FROM GapminderDataFiveYear
+                GROUP BY GapminderDataFiveYear.continent"
+
+world.sql <-"SELECT GapminderDataFiveYear.lifeExp
+             FROM GapminderDataFiveYear"
+
 #data queried from SQLite database
 library("DBI")
 library("RSQLite")
@@ -50,6 +60,10 @@ Afgstn.data <- dbGetQuery(db.conn, Afgstn.sql)
 Zmbw.data <- dbGetQuery(db.conn, Zmbw.sql)
 
 US.data <- dbGetQuery(db.conn, US.sql)
+
+Contnt.stats <- dbGetQuery(db.conn, Contnt.sql)
+
+world.lifeExp <- dbGetQuery(db.conn, world.sql)
 
 dbDisconnect(db.conn)
 
@@ -99,3 +113,26 @@ print(ggplot(Zmbw.data, aes(x=year, y=gdpPercap)) +
 
 ```
 
+Summary stats by continent... Buzzowga!
+
+```{r kable, echo=FALSE}
+library(knitr)
+kable(Contnt.stats)
+```
+
+
+```{r xtable, results="asis", echo=FALSE}
+#library(xtable)
+#tab <- xtable(summary(Contnt.stats)$coef, digits=c(0, 2, 2, 2)
+#print(tab, type="html")
+
+```
+
+Here is the global life expectancy. The second figure has really narrow bin widths!
+
+```{r, echo=FALSE}
+qplot(lifeExp, data=world.lifeExp, geom="histogram")
+
+qplot(lifeExp, data=world.lifeExp, geom="histogram",binwidth = .5) 
+
+```
